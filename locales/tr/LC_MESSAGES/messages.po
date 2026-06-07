@@ -1,0 +1,105 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+
+msgid "Inventory & Warehouse Management"
+msgstr "Envanter ve Depo Yönetimi"
+
+msgid "SKU"
+msgstr "Stok Kodu"
+
+msgid "Name"
+msgstr "Ad"
+
+msgid "Category"
+msgstr "Kategori"
+
+msgid "Supplier"
+msgstr "Tedarikçi"
+
+msgid "Quantity"
+msgstr "Miktar"
+
+msgid "Reorder"
+msgstr "Yeniden Sipariş"
+
+msgid "Unit Price"
+msgstr "Birim Fiyat"
+
+msgid "Add Product"
+msgstr "Ürün Ekle"
+
+msgid "Edit Product"
+msgstr "Ürün Düzenle"
+
+msgid "Delete Product"
+msgstr "Ürün Sil"
+
+msgid "Manage Categories"
+msgstr "Kategorileri Yönet"
+
+msgid "Manage Suppliers"
+msgstr "Tedarikçileri Yönet"
+
+msgid "Stock Movement"
+msgstr "Stok Hareketi"
+
+msgid "Reports"
+msgstr "Raporlar"
+
+msgid "Import Excel"
+msgstr "Excel İçe Aktar"
+
+msgid "Export Excel"
+msgstr "Excel Dışa Aktar"
+
+msgid "Language"
+msgstr "Dil"
+
+msgid "Statistics"
+msgstr "İstatistikler"
+
+msgid "File"
+msgstr "Dosya"
+
+msgid "Actions"
+msgstr "İşlemler"
+
+msgid "Exit"
+msgstr "Çıkış"
+
+msgid "Product List"
+msgstr "Ürün Listesi"
+
+msgid "Total products: {0} | Total stock value: {1:.2f}"
+msgstr "Toplam ürün: {0} | Toplam stok değeri: {1:.2f}"
+
+msgid "Double-click to edit. Delete key to remove. F1 for statistics."
+msgstr "Düzenlemek için çift tıklayın. Silmek için Delete tuşu. İstatistikler için F1."
+
+msgid "Confirm"
+msgstr "Onayla"
+
+msgid "Delete the selected product?"
+msgstr "Seçili ürün silinsin mi?"
+
+msgid "Please select a product first."
+msgstr "Lütfen önce bir ürün seçin."
+
+msgid "Import"
+msgstr "İçe Aktar"
+
+msgid "Export"
+msgstr "Dışa Aktar"
+
+msgid "Export successful."
+msgstr "Dışa aktarma başarılı."
+
+msgid "No data available to export."
+msgstr "Dışa aktarılacak veri yok."
+
+msgid "Imported {0} products, skipped {1} invalid rows."
+msgstr "{0} ürün içe aktarıldı, {1} geçersiz satır atlandı."

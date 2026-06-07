@@ -1,0 +1,105 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+msgid "Inventory & Warehouse Management"
+msgstr "Inventory & Warehouse Management"
+
+msgid "SKU"
+msgstr "SKU"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Category"
+msgstr "Category"
+
+msgid "Supplier"
+msgstr "Supplier"
+
+msgid "Quantity"
+msgstr "Quantity"
+
+msgid "Reorder"
+msgstr "Reorder"
+
+msgid "Unit Price"
+msgstr "Unit Price"
+
+msgid "Add Product"
+msgstr "Add Product"
+
+msgid "Edit Product"
+msgstr "Edit Product"
+
+msgid "Delete Product"
+msgstr "Delete Product"
+
+msgid "Manage Categories"
+msgstr "Manage Categories"
+
+msgid "Manage Suppliers"
+msgstr "Manage Suppliers"
+
+msgid "Stock Movement"
+msgstr "Stock Movement"
+
+msgid "Reports"
+msgstr "Reports"
+
+msgid "Import Excel"
+msgstr "Import Excel"
+
+msgid "Export Excel"
+msgstr "Export Excel"
+
+msgid "Language"
+msgstr "Language"
+
+msgid "Statistics"
+msgstr "Statistics"
+
+msgid "File"
+msgstr "File"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Exit"
+msgstr "Exit"
+
+msgid "Product List"
+msgstr "Product List"
+
+msgid "Total products: {0} | Total stock value: {1:.2f}"
+msgstr "Total products: {0} | Total stock value: {1:.2f}"
+
+msgid "Double-click to edit. Delete key to remove. F1 for statistics."
+msgstr "Double-click to edit. Delete key to remove. F1 for statistics."
+
+msgid "Confirm"
+msgstr "Confirm"
+
+msgid "Delete the selected product?"
+msgstr "Delete the selected product?"
+
+msgid "Please select a product first."
+msgstr "Please select a product first."
+
+msgid "Import"
+msgstr "Import"
+
+msgid "Export"
+msgstr "Export"
+
+msgid "Export successful."
+msgstr "Export successful."
+
+msgid "No data available to export."
+msgstr "No data available to export."
+
+msgid "Imported {0} products, skipped {1} invalid rows."
+msgstr "Imported {0} products, skipped {1} invalid rows."
