@@ -42,7 +42,7 @@ class ListProducts(tk.Tk):
         self.update_ui()
         self.list_products()
 
-    # --- Configuration helpers ---
+    # Configuration helpers.
     def load_config(self):
         if os.path.exists(CONFIG_FILE):
             with open(CONFIG_FILE, encoding="utf-8") as f:
@@ -53,14 +53,11 @@ class ListProducts(tk.Tk):
         with open(CONFIG_FILE, "w", encoding="utf-8") as f:
             json.dump({"language": lang_code}, f)
 
-    # --- Internationalization ---
     # Load the translation catalog for the chosen language.
     def load_language(self, lang_code):
         global _
         try:
-            lang = gettext.translation(
-                domain="messages", localedir="locales", languages=[lang_code]
-            )
+            lang = gettext.translation(domain="messages", localedir="locales", languages=[lang_code])
             _ = lang.gettext
         except FileNotFoundError:
             _ = gettext.gettext
@@ -82,14 +79,12 @@ class ListProducts(tk.Tk):
         self.menu.add_cascade(menu=self.actions_menu)
 
         # Top bar with the language selector.
-        frm_top = ttk.Frame(self)
-        frm_top.pack(padx=10, pady=10, fill="x")
+        self.frm_top = ttk.Frame(self)
+        self.frm_top.pack(padx=10, pady=10, fill="x")
 
-        self.lbl_language = ttk.Label(frm_top)
+        self.lbl_language = ttk.Label(self.frm_top)
         self.lbl_language.pack(side="left")
-        self.combo_language = ttk.Combobox(
-            frm_top, textvariable=self.var_language, state="readonly", width=12
-        )
+        self.combo_language = ttk.Combobox(self.frm_top, textvariable=self.var_language, state="readonly", width=12)
         self.combo_language["values"] = ["English", "Türkçe"]
         self.combo_language.pack(side="left", padx=5)
         self.combo_language.bind("<<ComboboxSelected>>", self.on_language_change)
@@ -98,37 +93,38 @@ class ListProducts(tk.Tk):
         self.frm_list = ttk.LabelFrame(self)
         self.frm_list.pack(padx=10, pady=(0, 10), fill="both", expand=True)
 
+        # Create the Treeview and its vertical scrollbar.
         columns = ("sku", "name", "category", "supplier", "quantity", "reorder", "price")
         self.tv = ttk.Treeview(self.frm_list, columns=columns, show="headings", height=12)
         for col in columns:
             self.tv.column(col, width=110, anchor="center")
         self.tv.pack(side="left", fill="both", expand=True, padx=5, pady=5)
 
-        tv_scroll = ttk.Scrollbar(self.frm_list, orient="vertical", command=self.tv.yview)
-        tv_scroll.pack(side="right", fill="y")
-        self.tv.configure(yscrollcommand=tv_scroll.set)
+        self.tv_scroll = ttk.Scrollbar(self.frm_list, orient="vertical", command=self.tv.yview)
+        self.tv_scroll.pack(side="right", fill="y")
+        self.tv.configure(yscrollcommand=self.tv_scroll.set)
 
         # Row colours for low-stock and out-of-stock products.
         self.tv.tag_configure("low", background="#fff3cd")
         self.tv.tag_configure("out", background="#f8d7da")
 
         # Action buttons.
-        frm_actions = ttk.Frame(self)
-        frm_actions.pack(padx=10, pady=(0, 10), fill="x")
+        self.frm_actions = ttk.Frame(self)
+        self.frm_actions.pack(padx=10, pady=(0, 10), fill="x")
 
-        self.btn_add = ttk.Button(frm_actions, command=self.on_add_product)
+        self.btn_add = ttk.Button(self.frm_actions, command=self.on_add_product)
         self.btn_add.pack(side="left", padx=2)
-        self.btn_edit = ttk.Button(frm_actions, command=self.on_show_edit_window)
+        self.btn_edit = ttk.Button(self.frm_actions, command=self.on_show_edit_window)
         self.btn_edit.pack(side="left", padx=2)
-        self.btn_delete = ttk.Button(frm_actions, command=self.on_item_delete)
+        self.btn_delete = ttk.Button(self.frm_actions, command=self.on_item_delete)
         self.btn_delete.pack(side="left", padx=2)
-        self.btn_categories = ttk.Button(frm_actions, command=self.on_manage_categories)
+        self.btn_categories = ttk.Button(self.frm_actions, command=self.on_manage_categories)
         self.btn_categories.pack(side="left", padx=2)
-        self.btn_suppliers = ttk.Button(frm_actions, command=self.on_manage_suppliers)
+        self.btn_suppliers = ttk.Button(self.frm_actions, command=self.on_manage_suppliers)
         self.btn_suppliers.pack(side="left", padx=2)
-        self.btn_movement = ttk.Button(frm_actions, command=self.on_stock_movement)
+        self.btn_movement = ttk.Button(self.frm_actions, command=self.on_stock_movement)
         self.btn_movement.pack(side="left", padx=2)
-        self.btn_reports = ttk.Button(frm_actions, command=self.on_reports)
+        self.btn_reports = ttk.Button(self.frm_actions, command=self.on_reports)
         self.btn_reports.pack(side="left", padx=2)
 
         self.lbl_info = ttk.Label(self)
@@ -177,9 +173,7 @@ class ListProducts(tk.Tk):
         self.actions_menu.add_command(label=_("Stock Movement"), command=self.on_stock_movement)
         self.actions_menu.add_command(label=_("Reports"), command=self.on_reports)
 
-        self.lbl_info.config(
-            text=_("Double-click to edit. Delete key to remove. F1 for statistics.")
-        )
+        self.lbl_info.config(text=_("Double-click to edit. Delete key to remove. F1 for statistics."))
 
     def on_language_change(self, event=None):
         lang_code = "tr" if self.var_language.get() == "Türkçe" else "en"
@@ -187,7 +181,6 @@ class ListProducts(tk.Tk):
         self.update_ui()
         self.save_config(lang_code)
 
-    # --- Product list ---
     # Reload the table and colour rows by stock level (iid is the database id).
     def list_products(self):
         for item in self.tv.get_children():
@@ -199,18 +192,12 @@ class ListProducts(tk.Tk):
                 tags = ("out",)
             elif quantity <= reorder:
                 tags = ("low",)
-            self.tv.insert(
-                "",
-                "end",
-                iid=pid,
-                values=(sku, name, category, supplier, quantity, reorder, f"{price:.2f}"),
-                tags=tags,
-            )
+            self.tv.insert("", "end", iid=pid, values=(sku, name, category, supplier, quantity, reorder, f"{price:.2f}"), tags=tags)
 
     def refresh_list(self):
         self.list_products()
 
-    # --- Handlers (sub-windows are modal, list refreshes afterwards) ---
+    # Handlers (sub-windows are modal, list refreshes afterwards).
     def on_add_product(self):
         win = AddProduct(parent=self)
         win.grab_set()
@@ -222,7 +209,9 @@ class ListProducts(tk.Tk):
         if not selected:
             msg.showinfo(_("Edit Product"), _("Please select a product first."), parent=self)
             return
-        win = EditProduct(parent=self, pid=int(selected[0]))
+        values = self.tv.item(selected[0], "values")
+        sku, name, category, supplier, quantity, reorder, price = values
+        win = EditProduct(parent=self, pid=int(selected[0]), sku=sku, name=name, category=category, supplier=supplier, quantity=quantity, reorder=reorder, price=price)
         win.grab_set()
         self.wait_window(win)
         self.refresh_list()
@@ -264,15 +253,13 @@ class ListProducts(tk.Tk):
         message = _("Total products: {0} | Total stock value: {1:.2f}").format(count, total)
         msg.showinfo(_("Statistics"), message, parent=self)
 
-    # --- Excel export ---
+    # Excel export.
     def on_export_data(self):
         products = self.db.get_products()
         if not products:
             msg.showerror(_("Export"), _("No data available to export."), parent=self)
             return
-        path = fd.asksaveasfilename(
-            defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx")]
-        )
+        path = fd.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx")])
         if not path:
             return
         wb = openpyxl.Workbook()
@@ -304,7 +291,6 @@ class ListProducts(tk.Tk):
         wb.save(path)
         msg.showinfo(_("Export"), _("Export successful."), parent=self)
 
-    # --- Excel import ---
     # Each row is validated before it is inserted; invalid rows are skipped.
     def on_import_data(self):
         path = fd.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
@@ -324,9 +310,7 @@ class ListProducts(tk.Tk):
             try:
                 cat_id = categories.get(category)
                 sup_id = suppliers.get(supplier)
-                clean = inventory_manager.ProductValidator.validate(
-                    sku, name, cat_id, sup_id, quantity, reorder, price
-                )
+                clean = inventory_manager.ProductValidator.validate(sku, name, cat_id, sup_id, quantity, reorder, price)
                 self.db.save_product(*clean)
                 imported += 1
             except inventory_manager.ValidationError:

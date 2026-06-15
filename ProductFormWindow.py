@@ -29,49 +29,53 @@ class ProductFormWindow(tk.Toplevel):
 
     # Build the shared product form.
     def build_ui(self):
+        # Create the LabelFrame container.
         frm_form = ttk.LabelFrame(self, text="Product Details")
         frm_form.pack(padx=10, pady=10, fill="x")
 
-        lbl_sku = ttk.Label(frm_form, text="SKU")
-        lbl_sku.grid(row=0, column=0, sticky="w", padx=5, pady=5)
-        entry_sku = ttk.Entry(frm_form, textvariable=self.var_sku, width=30)
-        entry_sku.grid(row=0, column=1, padx=5, pady=5)
+        # Reusable padding for the label and entry columns.
+        lbl_pad = {"padx": (10, 5), "pady": 6, "sticky": "w"}
+        ent_pad = {"padx": (5, 10), "pady": 6}
 
-        lbl_name = ttk.Label(frm_form, text="Name")
-        lbl_name.grid(row=1, column=0, sticky="w", padx=5, pady=5)
-        entry_name = ttk.Entry(frm_form, textvariable=self.var_name, width=30)
-        entry_name.grid(row=1, column=1, padx=5, pady=5)
+        # Create the form widgets.
+        self.lbl_sku = ttk.Label(frm_form, text="SKU")
+        self.txt_sku = ttk.Entry(frm_form, textvariable=self.var_sku, width=30)
 
-        lbl_category = ttk.Label(frm_form, text="Category")
-        lbl_category.grid(row=2, column=0, sticky="w", padx=5, pady=5)
-        self.combo_category = ttk.Combobox(
-            frm_form, textvariable=self.var_category, state="readonly", width=28
-        )
+        self.lbl_name = ttk.Label(frm_form, text="Name")
+        self.txt_name = ttk.Entry(frm_form, textvariable=self.var_name, width=30)
+
+        self.lbl_category = ttk.Label(frm_form, text="Category")
+        self.combo_category = ttk.Combobox(frm_form, textvariable=self.var_category, state="readonly", width=28)
         self.combo_category["values"] = [c[1] for c in self.categories]
-        self.combo_category.grid(row=2, column=1, padx=5, pady=5)
 
-        lbl_supplier = ttk.Label(frm_form, text="Supplier")
-        lbl_supplier.grid(row=3, column=0, sticky="w", padx=5, pady=5)
-        self.combo_supplier = ttk.Combobox(
-            frm_form, textvariable=self.var_supplier, state="readonly", width=28
-        )
+        self.lbl_supplier = ttk.Label(frm_form, text="Supplier")
+        self.combo_supplier = ttk.Combobox(frm_form, textvariable=self.var_supplier, state="readonly", width=28)
         self.combo_supplier["values"] = [s[1] for s in self.suppliers]
-        self.combo_supplier.grid(row=3, column=1, padx=5, pady=5)
 
-        lbl_quantity = ttk.Label(frm_form, text="Quantity")
-        lbl_quantity.grid(row=4, column=0, sticky="w", padx=5, pady=5)
-        entry_quantity = ttk.Entry(frm_form, textvariable=self.var_quantity, width=30)
-        entry_quantity.grid(row=4, column=1, padx=5, pady=5)
+        self.lbl_quantity = ttk.Label(frm_form, text="Quantity")
+        self.txt_quantity = ttk.Entry(frm_form, textvariable=self.var_quantity, width=30)
 
-        lbl_reorder = ttk.Label(frm_form, text="Reorder Level")
-        lbl_reorder.grid(row=5, column=0, sticky="w", padx=5, pady=5)
-        entry_reorder = ttk.Entry(frm_form, textvariable=self.var_reorder, width=30)
-        entry_reorder.grid(row=5, column=1, padx=5, pady=5)
+        self.lbl_reorder = ttk.Label(frm_form, text="Reorder Level")
+        self.txt_reorder = ttk.Entry(frm_form, textvariable=self.var_reorder, width=30)
 
-        lbl_price = ttk.Label(frm_form, text="Unit Price")
-        lbl_price.grid(row=6, column=0, sticky="w", padx=5, pady=5)
-        entry_price = ttk.Entry(frm_form, textvariable=self.var_price, width=30)
-        entry_price.grid(row=6, column=1, padx=5, pady=5)
+        self.lbl_price = ttk.Label(frm_form, text="Unit Price")
+        self.txt_price = ttk.Entry(frm_form, textvariable=self.var_price, width=30)
+
+        # Place widgets using the Grid geometry manager.
+        self.lbl_sku.grid(row=0, column=0, **lbl_pad)
+        self.txt_sku.grid(row=0, column=1, **ent_pad)
+        self.lbl_name.grid(row=1, column=0, **lbl_pad)
+        self.txt_name.grid(row=1, column=1, **ent_pad)
+        self.lbl_category.grid(row=2, column=0, **lbl_pad)
+        self.combo_category.grid(row=2, column=1, **ent_pad)
+        self.lbl_supplier.grid(row=3, column=0, **lbl_pad)
+        self.combo_supplier.grid(row=3, column=1, **ent_pad)
+        self.lbl_quantity.grid(row=4, column=0, **lbl_pad)
+        self.txt_quantity.grid(row=4, column=1, **ent_pad)
+        self.lbl_reorder.grid(row=5, column=0, **lbl_pad)
+        self.txt_reorder.grid(row=5, column=1, **ent_pad)
+        self.lbl_price.grid(row=6, column=0, **lbl_pad)
+        self.txt_price.grid(row=6, column=1, **ent_pad)
 
         # Subclasses add their Save / Update button to this frame.
         self.frm_buttons = ttk.Frame(self)

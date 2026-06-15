@@ -23,21 +23,21 @@ class ProductValidator:
 
         try:
             quantity = int(str(quantity).strip())
-        except ValueError:
+        except (ValueError, TypeError):
             raise ValidationError("Quantity must be a valid integer.")
         if quantity < 0:
             raise ValidationError("Quantity cannot be negative.")
 
         try:
             reorder_lvl = int(str(reorder_lvl).strip())
-        except ValueError:
+        except (ValueError, TypeError):
             raise ValidationError("Reorder level must be a valid integer.")
         if reorder_lvl < 0:
             raise ValidationError("Reorder level cannot be negative.")
 
         try:
             unit_price = float(str(unit_price).strip())
-        except ValueError:
+        except (ValueError, TypeError):
             raise ValidationError("Unit price must be a valid number.")
         if unit_price < 0:
             raise ValidationError("Unit price cannot be negative.")
@@ -45,6 +45,7 @@ class ProductValidator:
         return sku, name, int(cat_id), int(sup_id), quantity, reorder_lvl, unit_price
 
 
+# Class responsible for validating category data before database entry.
 class CategoryValidator:
     @staticmethod
     def validate(name):
@@ -54,6 +55,7 @@ class CategoryValidator:
         return (name,)
 
 
+# Class responsible for validating supplier data before database entry.
 class SupplierValidator:
     @staticmethod
     def validate(name, contact):
@@ -64,6 +66,7 @@ class SupplierValidator:
         return name, contact
 
 
+# Class responsible for validating stock movement data before database entry.
 class MovementValidator:
     @staticmethod
     def validate(pid, mtype, quantity, current_stock):
@@ -71,7 +74,7 @@ class MovementValidator:
             raise ValidationError("Please select a product.")
         try:
             quantity = int(str(quantity).strip())
-        except ValueError:
+        except (ValueError, TypeError):
             raise ValidationError("Quantity must be a valid integer.")
         if quantity <= 0:
             raise ValidationError("Quantity must be a positive integer.")
@@ -144,9 +147,7 @@ class InventoryDatabase:
                 ("OfficePlus", "0216 555 2020"),
                 ("BuildMart", "0312 555 3030"),
             ]
-            cur.executemany(
-                "INSERT INTO Suppliers (name, contact) VALUES (?, ?)", suppliers
-            )
+            cur.executemany("INSERT INTO Suppliers (name, contact) VALUES (?, ?)", suppliers)
 
             products = [
                 ("ELC-001", "USB Cable", 1, 1, 50, 10, 3.5),
@@ -155,14 +156,10 @@ class InventoryDatabase:
                 ("STA-002", "Blue Pen Box", 2, 2, 100, 20, 6.0),
                 ("HRD-001", "Screwdriver Set", 3, 3, 15, 5, 9.75),
             ]
-            cur.executemany(
-                """INSERT INTO Products
+            cur.executemany("""INSERT INTO Products
                    (sku, name, cat_id, sup_id, quantity, reorder_lvl, unit_price)
-                   VALUES (?, ?, ?, ?, ?, ?, ?)""",
-                products,
-            )
+                   VALUES (?, ?, ?, ?, ?, ?, ?)""", products)
 
-    # --- Category methods ---
     def add_category(self, name):
         with self.get_connection() as conn:
             cur = conn.cursor()
@@ -180,13 +177,10 @@ class InventoryDatabase:
             cur = conn.cursor()
             cur.execute("DELETE FROM Categories WHERE cat_id = ?", (cat_id,))
 
-    # --- Supplier methods ---
     def add_supplier(self, name, contact):
         with self.get_connection() as conn:
             cur = conn.cursor()
-            cur.execute(
-                "INSERT INTO Suppliers (name, contact) VALUES (?, ?)", (name, contact)
-            )
+            cur.execute("INSERT INTO Suppliers (name, contact) VALUES (?, ?)", (name, contact))
             return cur.lastrowid
 
     def get_suppliers(self):
@@ -200,28 +194,21 @@ class InventoryDatabase:
             cur = conn.cursor()
             cur.execute("DELETE FROM Suppliers WHERE sup_id = ?", (sup_id,))
 
-    # --- Product methods ---
     def save_product(self, sku, name, cat_id, sup_id, quantity, reorder_lvl, unit_price):
         with self.get_connection() as conn:
             cur = conn.cursor()
-            cur.execute(
-                """INSERT INTO Products
+            cur.execute("""INSERT INTO Products
                    (sku, name, cat_id, sup_id, quantity, reorder_lvl, unit_price)
-                   VALUES (?, ?, ?, ?, ?, ?, ?)""",
-                (sku, name, cat_id, sup_id, quantity, reorder_lvl, unit_price),
-            )
+                   VALUES (?, ?, ?, ?, ?, ?, ?)""", (sku, name, cat_id, sup_id, quantity, reorder_lvl, unit_price))
             return cur.lastrowid
 
     def update_product(self, pid, sku, name, cat_id, sup_id, quantity, reorder_lvl, unit_price):
         with self.get_connection() as conn:
             cur = conn.cursor()
-            cur.execute(
-                """UPDATE Products SET
+            cur.execute("""UPDATE Products SET
                    sku = ?, name = ?, cat_id = ?, sup_id = ?,
                    quantity = ?, reorder_lvl = ?, unit_price = ?
-                   WHERE pid = ?""",
-                (sku, name, cat_id, sup_id, quantity, reorder_lvl, unit_price, pid),
-            )
+                   WHERE pid = ?""", (sku, name, cat_id, sup_id, quantity, reorder_lvl, unit_price, pid))
 
     # Read all products with their category and supplier names for display.
     def get_products(self):
@@ -241,12 +228,9 @@ class InventoryDatabase:
     def get_product(self, pid):
         with self.get_connection() as conn:
             cur = conn.cursor()
-            cur.execute(
-                """SELECT pid, sku, name, cat_id, sup_id,
+            cur.execute("""SELECT pid, sku, name, cat_id, sup_id,
                           quantity, reorder_lvl, unit_price
-                   FROM Products WHERE pid = ?""",
-                (pid,),
-            )
+                   FROM Products WHERE pid = ?""", (pid,))
             return cur.fetchone()
 
     def delete_product(self, pid):
@@ -257,31 +241,19 @@ class InventoryDatabase:
     def get_count_and_total_value(self):
         with self.get_connection() as conn:
             cur = conn.cursor()
-            cur.execute(
-                "SELECT COUNT(*), COALESCE(SUM(quantity * unit_price), 0) FROM Products"
-            )
+            cur.execute("SELECT COUNT(*), COALESCE(SUM(quantity * unit_price), 0) FROM Products")
             return cur.fetchone()
 
-    # --- Movement methods ---
     # Record a movement and adjust the product quantity (IN adds, OUT subtracts).
     def add_movement(self, pid, mtype, quantity):
         with self.get_connection() as conn:
             cur = conn.cursor()
             mdate = datetime.now().strftime("%Y-%m-%d %H:%M")
-            cur.execute(
-                "INSERT INTO Movements (pid, mtype, quantity, mdate) VALUES (?, ?, ?, ?)",
-                (pid, mtype, quantity, mdate),
-            )
+            cur.execute("INSERT INTO Movements (pid, mtype, quantity, mdate) VALUES (?, ?, ?, ?)", (pid, mtype, quantity, mdate))
             if mtype == "IN":
-                cur.execute(
-                    "UPDATE Products SET quantity = quantity + ? WHERE pid = ?",
-                    (quantity, pid),
-                )
+                cur.execute("UPDATE Products SET quantity = quantity + ? WHERE pid = ?", (quantity, pid))
             else:
-                cur.execute(
-                    "UPDATE Products SET quantity = quantity - ? WHERE pid = ?",
-                    (quantity, pid),
-                )
+                cur.execute("UPDATE Products SET quantity = quantity - ? WHERE pid = ?", (quantity, pid))
 
     def get_movements(self):
         with self.get_connection() as conn:
@@ -294,7 +266,6 @@ class InventoryDatabase:
             """)
             return cur.fetchall()
 
-    # --- Chart data methods ---
     def get_stock_by_category(self):
         with self.get_connection() as conn:
             cur = conn.cursor()
@@ -313,9 +284,7 @@ class InventoryDatabase:
             cur = conn.cursor()
             cur.execute("SELECT COUNT(*) FROM Products WHERE quantity = 0")
             out_of_stock = cur.fetchone()[0]
-            cur.execute(
-                "SELECT COUNT(*) FROM Products WHERE quantity > 0 AND quantity <= reorder_lvl"
-            )
+            cur.execute("SELECT COUNT(*) FROM Products WHERE quantity > 0 AND quantity <= reorder_lvl")
             low_stock = cur.fetchone()[0]
             cur.execute("SELECT COUNT(*) FROM Products WHERE quantity > reorder_lvl")
             in_stock = cur.fetchone()[0]

@@ -36,6 +36,7 @@ Tasks are shared equally between the two group members. If one member leaves, th
 covers both columns.
 
 **Member A — Data layer & product entry**
+
 - `inventory_manager.py`: schema, `create_table`, `fill_data`, CRUD/query methods, the
   movement-updates-quantity logic, and the chart-data queries.
 - All validator classes and the validation rules.
@@ -43,6 +44,7 @@ covers both columns.
 - Excel import/export with openpyxl.
 
 **Member B — Main UI, secondary windows, charts & i18n**
+
 - `ListProducts.py`: Treeview, low-stock highlighting, statistics, menu/buttons, key
   bindings, and wiring every sub-window.
 - `ManageCategories.py`, `ManageSuppliers.py`, `StockMovement.py`.

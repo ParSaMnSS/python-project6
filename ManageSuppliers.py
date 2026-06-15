@@ -22,42 +22,42 @@ class ManageSuppliers(tk.Toplevel):
         self.refresh_list()
 
     def build_ui(self):
+        # Create the LabelFrame for adding a supplier.
         frm_add = ttk.LabelFrame(self, text="Add Supplier")
         frm_add.pack(padx=10, pady=10, fill="x")
 
-        lbl_name = ttk.Label(frm_add, text="Name")
-        lbl_name.grid(row=0, column=0, padx=5, pady=5)
-        entry_name = ttk.Entry(frm_add, textvariable=self.var_name, width=25)
-        entry_name.grid(row=0, column=1, padx=5, pady=5)
+        self.lbl_name = ttk.Label(frm_add, text="Name")
+        self.lbl_name.grid(row=0, column=0, padx=5, pady=5)
+        self.txt_name = ttk.Entry(frm_add, textvariable=self.var_name, width=25)
+        self.txt_name.grid(row=0, column=1, padx=5, pady=5)
 
-        lbl_contact = ttk.Label(frm_add, text="Contact")
-        lbl_contact.grid(row=1, column=0, padx=5, pady=5)
-        entry_contact = ttk.Entry(frm_add, textvariable=self.var_contact, width=25)
-        entry_contact.grid(row=1, column=1, padx=5, pady=5)
+        self.lbl_contact = ttk.Label(frm_add, text="Contact")
+        self.lbl_contact.grid(row=1, column=0, padx=5, pady=5)
+        self.txt_contact = ttk.Entry(frm_add, textvariable=self.var_contact, width=25)
+        self.txt_contact.grid(row=1, column=1, padx=5, pady=5)
 
-        btn_add = ttk.Button(frm_add, text="Add", command=self.on_add_supplier)
-        btn_add.grid(row=0, column=2, rowspan=2, padx=5, pady=5)
+        self.btn_add = ttk.Button(frm_add, text="Add", command=self.on_add_supplier)
+        self.btn_add.grid(row=0, column=2, rowspan=2, padx=5, pady=5)
 
+        # Create the Treeview that lists the existing suppliers.
         frm_list = ttk.LabelFrame(self, text="Suppliers")
         frm_list.pack(padx=10, pady=(0, 10), fill="both")
 
-        self.tv = ttk.Treeview(
-            frm_list, columns=("name", "contact"), show="headings", height=8
-        )
+        self.tv = ttk.Treeview(frm_list, columns=("name", "contact"), show="headings", height=8)
         self.tv.heading("name", text="Name")
         self.tv.heading("contact", text="Contact")
         self.tv.column("name", width=160)
         self.tv.column("contact", width=140)
         self.tv.pack(side="left", padx=5, pady=5)
 
-        tv_scroll = ttk.Scrollbar(frm_list, orient="vertical", command=self.tv.yview)
-        tv_scroll.pack(side="right", fill="y")
-        self.tv.configure(yscrollcommand=tv_scroll.set)
+        self.tv_scroll = ttk.Scrollbar(frm_list, orient="vertical", command=self.tv.yview)
+        self.tv_scroll.pack(side="right", fill="y")
+        self.tv.configure(yscrollcommand=self.tv_scroll.set)
 
         frm_actions = ttk.Frame(self)
         frm_actions.pack(padx=10, pady=(0, 10), fill="x")
-        btn_delete = ttk.Button(frm_actions, text="Delete Selected", command=self.on_item_delete)
-        btn_delete.pack(side="right")
+        self.btn_delete = ttk.Button(frm_actions, text="Delete Selected", command=self.on_item_delete)
+        self.btn_delete.pack(side="right")
 
     # Reload the supplier list (iid is the database id).
     def refresh_list(self):
@@ -68,9 +68,7 @@ class ManageSuppliers(tk.Toplevel):
 
     def on_add_supplier(self):
         try:
-            clean = inventory_manager.SupplierValidator.validate(
-                self.var_name.get(), self.var_contact.get()
-            )
+            clean = inventory_manager.SupplierValidator.validate(self.var_name.get(), self.var_contact.get())
             self.db.add_supplier(*clean)
             self.var_name.set("")
             self.var_contact.set("")
@@ -88,10 +86,3 @@ class ManageSuppliers(tk.Toplevel):
         if msg.askyesno("Confirm", "Delete the selected supplier?", parent=self):
             self.db.delete_supplier(int(selected[0]))
             self.refresh_list()
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.withdraw()
-    win = ManageSuppliers(parent=root)
-    win.mainloop()

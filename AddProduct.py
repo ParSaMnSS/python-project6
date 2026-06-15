@@ -14,31 +14,16 @@ class AddProduct(ProductFormWindow):
 
     def build_ui(self):
         super().build_ui()
-        btn_save = ttk.Button(self.frm_buttons, text="Save", command=self.on_save_product)
-        btn_save.pack(side="right")
+        self.btn_save = ttk.Button(self.frm_buttons, text="Save", command=self.on_save_product)
+        self.btn_save.pack(side="right")
 
     # Validate the form and insert a new product.
     def on_save_product(self):
         try:
-            clean = inventory_manager.ProductValidator.validate(
-                self.var_sku.get(),
-                self.var_name.get(),
-                self.get_cat_id(),
-                self.get_sup_id(),
-                self.var_quantity.get(),
-                self.var_reorder.get(),
-                self.var_price.get(),
-            )
+            clean = inventory_manager.ProductValidator.validate(self.var_sku.get(), self.var_name.get(), self.get_cat_id(), self.get_sup_id(), self.var_quantity.get(), self.var_reorder.get(), self.var_price.get())
             self.db.save_product(*clean)
             self.destroy()
         except inventory_manager.ValidationError as e:
             msg.showwarning("Validation Error", str(e), parent=self)
         except Exception as e:
             msg.showerror("System Error", f"An unexpected error occurred: {e}", parent=self)
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.withdraw()
-    win = AddProduct(parent=root)
-    win.mainloop()

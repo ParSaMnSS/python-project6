@@ -67,16 +67,7 @@ def write_mo(entries, path):
         value_table += struct.pack("II", l2, strs_offset + o2)
 
     # MO header with the GNU magic number.
-    header = struct.pack(
-        "Iiiiiii",
-        0x950412DE,
-        0,
-        count,
-        key_table_offset,
-        value_table_offset,
-        0,
-        0,
-    )
+    header = struct.pack("Iiiiiii", 0x950412DE, 0, count, key_table_offset, value_table_offset, 0, 0)
 
     with open(path, "wb") as f:
         f.write(header + key_table + value_table + ids + strs)

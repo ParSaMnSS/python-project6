@@ -20,18 +20,15 @@ class ReportsWindow(tk.Toplevel):
         self.build_ui()
 
     def build_ui(self):
+        # Create the LabelFrame that holds the chart buttons.
         frm_buttons = ttk.LabelFrame(self, text="Charts")
         frm_buttons.pack(padx=20, pady=20, fill="x")
 
-        btn_category = ttk.Button(
-            frm_buttons, text="Stock by Category", command=self.on_stock_by_category
-        )
-        btn_category.pack(padx=10, pady=10, fill="x")
+        self.btn_category = ttk.Button(frm_buttons, text="Stock by Category", command=self.on_stock_by_category)
+        self.btn_category.pack(padx=10, pady=10, fill="x")
 
-        btn_status = ttk.Button(
-            frm_buttons, text="Stock Status", command=self.on_stock_status
-        )
-        btn_status.pack(padx=10, pady=10, fill="x")
+        self.btn_status = ttk.Button(frm_buttons, text="Stock Status", command=self.on_stock_status)
+        self.btn_status.pack(padx=10, pady=10, fill="x")
 
     # Bar chart of total stock per category.
     def on_stock_by_category(self):
@@ -61,18 +58,5 @@ class ReportsWindow(tk.Toplevel):
         explode = (0.05, 0.05, 0.05)
         plt.figure(num="Stock Status")
         plt.title("Stock Status")
-        plt.pie(
-            sizes,
-            labels=labels,
-            colors=colors,
-            explode=explode,
-            autopct="%.1f%%",
-        )
+        plt.pie(sizes, labels=labels, colors=colors, explode=explode, autopct="%.1f%%")
         plt.show()
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.withdraw()
-    win = ReportsWindow(parent=root)
-    win.mainloop()

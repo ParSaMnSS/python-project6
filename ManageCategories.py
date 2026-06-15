@@ -21,16 +21,18 @@ class ManageCategories(tk.Toplevel):
         self.refresh_list()
 
     def build_ui(self):
+        # Create the LabelFrame for adding a category.
         frm_add = ttk.LabelFrame(self, text="Add Category")
         frm_add.pack(padx=10, pady=10, fill="x")
 
-        lbl_name = ttk.Label(frm_add, text="Name")
-        lbl_name.grid(row=0, column=0, padx=5, pady=5)
-        entry_name = ttk.Entry(frm_add, textvariable=self.var_name, width=25)
-        entry_name.grid(row=0, column=1, padx=5, pady=5)
-        btn_add = ttk.Button(frm_add, text="Add", command=self.on_add_category)
-        btn_add.grid(row=0, column=2, padx=5, pady=5)
+        self.lbl_name = ttk.Label(frm_add, text="Name")
+        self.lbl_name.grid(row=0, column=0, padx=5, pady=5)
+        self.txt_name = ttk.Entry(frm_add, textvariable=self.var_name, width=25)
+        self.txt_name.grid(row=0, column=1, padx=5, pady=5)
+        self.btn_add = ttk.Button(frm_add, text="Add", command=self.on_add_category)
+        self.btn_add.grid(row=0, column=2, padx=5, pady=5)
 
+        # Create the Treeview that lists the existing categories.
         frm_list = ttk.LabelFrame(self, text="Categories")
         frm_list.pack(padx=10, pady=(0, 10), fill="both")
 
@@ -39,14 +41,14 @@ class ManageCategories(tk.Toplevel):
         self.tv.column("name", width=200)
         self.tv.pack(side="left", padx=5, pady=5)
 
-        tv_scroll = ttk.Scrollbar(frm_list, orient="vertical", command=self.tv.yview)
-        tv_scroll.pack(side="right", fill="y")
-        self.tv.configure(yscrollcommand=tv_scroll.set)
+        self.tv_scroll = ttk.Scrollbar(frm_list, orient="vertical", command=self.tv.yview)
+        self.tv_scroll.pack(side="right", fill="y")
+        self.tv.configure(yscrollcommand=self.tv_scroll.set)
 
         frm_actions = ttk.Frame(self)
         frm_actions.pack(padx=10, pady=(0, 10), fill="x")
-        btn_delete = ttk.Button(frm_actions, text="Delete Selected", command=self.on_item_delete)
-        btn_delete.pack(side="right")
+        self.btn_delete = ttk.Button(frm_actions, text="Delete Selected", command=self.on_item_delete)
+        self.btn_delete.pack(side="right")
 
     # Reload the category list (iid is the database id).
     def refresh_list(self):
@@ -74,10 +76,3 @@ class ManageCategories(tk.Toplevel):
         if msg.askyesno("Confirm", "Delete the selected category?", parent=self):
             self.db.delete_category(int(selected[0]))
             self.refresh_list()
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.withdraw()
-    win = ManageCategories(parent=root)
-    win.mainloop()
